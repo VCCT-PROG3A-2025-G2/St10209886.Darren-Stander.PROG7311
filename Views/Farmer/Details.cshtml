@@ -1,0 +1,13 @@
+﻿@model TestApp.Models.Farmer
+
+<h2>Farmer Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text"><strong>Contact Info:</strong> @Model.ContactInfo</p>
+        <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+    </div>
+</div>
+
+<a href="/Farmer" class="btn btn-secondary mt-3">Back to List</a>

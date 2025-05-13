@@ -1,0 +1,64 @@
+﻿@model TestApp.Models.User
+
+<h2>Register</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <strong>There were issues with your submission:</strong>
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<form asp-action="Register" method="post">
+    <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" id="Username" name="Username" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" class="form-control" id="Password" name="Password" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Role">Role</label>
+        <select class="form-control" id="Role" name="Role" required>
+            <option value="" disabled selected>Select your role</option>
+            <option value="Farmer">Farmer</option>
+            <option value="Employee">Employee</option>
+        </select>
+    </div>
+
+    <!-- Only show these if role is Farmer -->
+    <div id="farmerFields" style="display: none;">
+        <div class="form-group">
+            <label for="ContactInfo">Contact Info</label>
+            <input type="text" class="form-control" id="ContactInfo" name="ContactInfo" />
+        </div>
+
+        <div class="form-group">
+            <label for="Address">Address</label>
+            <input type="text" class="form-control" id="Address" name="Address" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Register</button>
+    <a href="/User/Login" class="btn btn-secondary">Back to Login</a>
+</form>
+
+<script>
+    // Show additional fields if "Farmer" is selected
+    document.getElementById("Role").addEventListener("change", function() {
+        if (this.value === "Farmer") {
+            document.getElementById("farmerFields").style.display = "block";
+        } else {
+            document.getElementById("farmerFields").style.display = "none";
+        }
+    });
+</script>

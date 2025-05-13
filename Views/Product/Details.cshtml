@@ -1,0 +1,14 @@
+﻿@model TestApp.Models.Product
+
+<h2>Product Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text"><strong>Category:</strong> @Model.Category</p>
+        <p class="card-text"><strong>Production Date:</strong> @Model.ProductionDate.ToShortDateString()</p>
+        <p class="card-text"><strong>Farmer ID:</strong> @Model.FarmerId</p>
+    </div>
+</div>
+
+<a href="/Product" class="btn btn-secondary mt-3">Back to List</a>

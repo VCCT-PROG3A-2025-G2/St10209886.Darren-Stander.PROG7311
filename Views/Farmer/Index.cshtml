@@ -1,0 +1,29 @@
+﻿@model IEnumerable<TestApp.Models.Farmer>
+
+<h2>Farmers List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Contact Info</th>
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var farmer in Model)
+        {
+            <tr>
+                <td>@farmer.Name</td>
+                <td>@farmer.ContactInfo</td>
+                <td>@farmer.Address</td>
+                <td>
+                    <a href="/Farmer/Details/@farmer.Id" class="btn btn-info">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/Farmer/Add" class="btn btn-primary">Add New Farmer</a>
