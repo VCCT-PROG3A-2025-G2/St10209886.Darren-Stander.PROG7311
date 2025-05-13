@@ -1,0 +1,18 @@
+﻿@model TestApp.Models.Product
+
+<h2>Delete Product</h2>
+
+<p>Are you sure you want to delete this product?</p>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p><strong>Category:</strong> @Model.Category</p>
+    <p><strong>Production Date:</strong> @Model.ProductionDate.ToShortDateString()</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <!-- ✅ Fixed form action -->
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

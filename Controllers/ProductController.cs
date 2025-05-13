@@ -5,7 +5,6 @@ using TestApp.Data;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace TestApp.Controllers
 {
@@ -19,31 +18,44 @@ namespace TestApp.Controllers
         }
 
         // 🔥 GET: Product/Index
-        public IActionResult Index()
+        public IActionResult Index(string category, DateTime? startDate, DateTime? endDate)
         {
             try
             {
-                // 🔥 Get the Role and FarmerId from Session
                 var role = HttpContext.Session.GetString("Role");
                 var farmerId = HttpContext.Session.GetInt32("FarmerId");
 
-                List<Product> products;
+                // 🔍 Load all products, including their linked Farmer
+                var products = _context.Products
+                    .Include(p => p.Farmer)
+                    .AsQueryable();
 
-                // 🔥 If the user is a Farmer, only show their products
+                // 🔥 Filter for Farmers - show only their own products
                 if (role == "Farmer" && farmerId.HasValue)
                 {
-                    products = _context.Products
-                                       .Include(p => p.Farmer)
-                                       .Where(p => p.FarmerId == farmerId.Value)
-                                       .ToList();
-                }
-                else
-                {
-                    // 🔥 If the user is an Employee, show all products
-                    products = _context.Products.Include(p => p.Farmer).ToList();
+                    products = products.Where(p => p.FarmerId == farmerId.Value);
                 }
 
-                return View(products);
+                // 🔥 Filter for Employees based on query
+                if (role == "Employee")
+                {
+                    if (!string.IsNullOrEmpty(category))
+                    {
+                        products = products.Where(p => p.Category.Contains(category));
+                    }
+
+                    if (startDate.HasValue)
+                    {
+                        products = products.Where(p => p.ProductionDate >= startDate.Value);
+                    }
+
+                    if (endDate.HasValue)
+                    {
+                        products = products.Where(p => p.ProductionDate <= endDate.Value);
+                    }
+                }
+
+                return View(products.ToList());
             }
             catch (Exception ex)
             {
@@ -52,19 +64,42 @@ namespace TestApp.Controllers
             }
         }
 
+        // 🔥 GET: Product/Details/5 (Employee ONLY)
+        public IActionResult Details(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+
+            // 🔥 Only Employees can view details
+            if (role != "Employee")
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            // 🔍 Fetch the product and include Farmer reference
+            var product = _context.Products
+                .Include(p => p.Farmer)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
         // 🔥 GET: Product/Add
         public IActionResult Add()
         {
-            try
+            var role = HttpContext.Session.GetString("Role");
+
+            // 🔥 Only Farmers can add
+            if (role != "Farmer")
             {
-                Console.WriteLine("Navigating to Add Product page...");
-                return View();
+                return RedirectToAction("AccessDenied", "Home");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"🔥 ERROR LOADING ADD VIEW: {ex.Message}");
-                return View("Error");
-            }
+
+            return View(new Product());
         }
 
         // 🔥 POST: Product/Add
@@ -74,77 +109,105 @@ namespace TestApp.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var farmerId = HttpContext.Session.GetInt32("FarmerId");
-
-                    if (farmerId == null)
-                    {
-                        Console.WriteLine("⛔ FarmerId is missing in the session.");
-                        ModelState.AddModelError("", "You are not authorized to add products.");
-                        return View(product);
-                    }
-
-                    product.FarmerId = farmerId.Value;
-
-                    // 🔥 Add product and save changes
-                    _context.Products.Add(product);
-                    _context.SaveChanges();
-                    Console.WriteLine("✅ Product saved successfully!");
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    foreach (var modelState in ModelState.Values)
-                    {
-                        foreach (var error in modelState.Errors)
-                        {
-                            Console.WriteLine($"🔥 Validation Error: {error.ErrorMessage}");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"🔥 ERROR SAVING PRODUCT: {ex.Message}");
-            }
-
-            Console.WriteLine("⛔ Model State Invalid");
-            return View(product);
-        }
-
-        // 🔥 GET: Product/Details/5
-        public IActionResult Details(int id)
-        {
-            try
-            {
-                var role = HttpContext.Session.GetString("Role");
                 var farmerId = HttpContext.Session.GetInt32("FarmerId");
 
-                // 🔥 Fetch the product
-                var product = _context.Products
-                    .Include(p => p.Farmer)
-                    .FirstOrDefault(p => p.Id == id);
-
-                // 🔥 Security check: Farmer can only view their own products
-                if (role == "Farmer" && product.FarmerId != farmerId)
+                if (farmerId == null)
                 {
-                    Console.WriteLine("⛔ Unauthorized access attempt detected.");
                     return RedirectToAction("AccessDenied", "Home");
                 }
 
-                if (product == null)
-                {
-                    return NotFound();
-                }
+                product.FarmerId = farmerId.Value;
 
-                return View(product);
+                _context.Products.Add(product);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"🔥 ERROR LOADING PRODUCT DETAILS: {ex.Message}");
-                return View("Error");
+                Console.WriteLine($"🔥 ERROR ADDING PRODUCT: {ex.Message}");
+                return View(product);
             }
+        }
+
+        // 🔥 GET: Product/Edit/5
+        public IActionResult Edit(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "Farmer")
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            var farmerId = HttpContext.Session.GetInt32("FarmerId");
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+
+            if (product == null || product.FarmerId != farmerId)
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            return View(product);
+        }
+
+        // 🔥 POST: Product/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Product product)
+        {
+            var farmerId = HttpContext.Session.GetInt32("FarmerId");
+
+            if (product.FarmerId != farmerId)
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(product);
+        }
+
+        // 🔥 GET: Product/Delete/5
+        public IActionResult Delete(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "Farmer")
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            var farmerId = HttpContext.Session.GetInt32("FarmerId");
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+
+            if (product == null || product.FarmerId != farmerId)
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            return View(product);
+        }
+
+        // 🔥 POST: Product/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var farmerId = HttpContext.Session.GetInt32("FarmerId");
+
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+
+            if (product == null || product.FarmerId != farmerId)
+            {
+                return RedirectToAction("AccessDenied", "Home");
+            }
+
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -7,8 +7,10 @@
         <h5 class="card-title">@Model.Name</h5>
         <p class="card-text"><strong>Category:</strong> @Model.Category</p>
         <p class="card-text"><strong>Production Date:</strong> @Model.ProductionDate.ToShortDateString()</p>
-        <p class="card-text"><strong>Farmer ID:</strong> @Model.FarmerId</p>
+        <p class="card-text"><strong>Farmer Name:</strong> @Model.Farmer.Name</p>
+        <p class="card-text"><strong>Contact Info:</strong> @Model.Farmer.ContactInfo</p>
+        <p class="card-text"><strong>Address:</strong> @Model.Farmer.Address</p>
     </div>
 </div>
 
-<a href="/Product" class="btn btn-secondary mt-3">Back to List</a>
+<a asp-controller="Product" asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
