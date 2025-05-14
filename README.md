@@ -46,3 +46,11 @@ TestApp is an ASP.NET MVC application designed to manage farmers and their produ
 - Catches database errors and shows user-friendly messages.
 - Redirects unauthorized access to an Access Denied page.
 
+## How it works
+- Run the application by pressing f5
+- Open your browser at http://localhost:7130/.
+- You’ll land on the Login/Register screen.
+- Choose Farmer or Employee when registering.
+- Farmer users can add/view their own products.
+- Employee users can add Farmers, view all products, and filter/search.
+
