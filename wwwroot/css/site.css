@@ -33,11 +33,6 @@ body {
         flex: 1;
     }
 
-h2 {
-    color: var(--green-dark);
-    margin-bottom: 1.5rem;
-}
-
 /* ==============================
    Navbar
    ============================== */
@@ -74,9 +69,10 @@ h2 {
     }
 
 /* ==============================
-   Forms
+   Forms & Buttons
    ============================== */
-.form-group label {
+.form-group label,
+.form-label {
     font-weight: 600;
     color: var(--text-dark);
 }
@@ -91,9 +87,6 @@ h2 {
         border-color: var(--green-primary);
     }
 
-/* ==============================
-   Buttons
-   ============================== */
 .btn {
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
@@ -120,28 +113,6 @@ h2 {
     .btn-secondary:hover {
         background-color: #5a6268;
         border-color: #545b62;
-    }
-
-.btn-info {
-    background-color: #17a2b8;
-    border-color: #17a2b8;
-    color: #fff;
-}
-
-    .btn-info:hover {
-        background-color: #138496;
-        border-color: #117a8b;
-    }
-
-.btn-warning {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: #212529;
-}
-
-    .btn-warning:hover {
-        background-color: #e0a800;
-        border-color: #d39e00;
     }
 
 .btn-success {
@@ -177,4 +148,31 @@ h2 {
 
 .m-2 {
     margin: 0.5rem !important;
+}
+
+/* ==============================
+   Center the ROW container, 
+   but keep its children left-aligned
+   ============================== */
+main[role="main"] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* allow rows inside to stretch full-width */
+    align-items: stretch;
+}
+
+    /* force any direct .row under main to be full-width */
+    main[role="main"] > .row {
+        width: 100%;
+    }
+
+/* your existing centering on HOME/Login/Register
+   still works because those rows use:
+     <div class="row justify-content-center align-items-center">
+   which now truly centers the column in the middle */
+
+/* optional: if you want headings centered site-wide */
+h1, h2 {
+    text-align: center;
 }

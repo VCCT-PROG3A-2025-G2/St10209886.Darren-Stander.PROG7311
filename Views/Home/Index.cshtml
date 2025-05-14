@@ -1,19 +1,45 @@
-﻿<!-- Views/Home/Index.cshtml -->
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Home";
+    var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+    var role = HttpContextAccessor.HttpContext.Session.GetString("Role");
 }
 
 <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 60vh;">
-    <h1 class="mb-3 text-success">Welcome to Agri – Energy Connect</h1>
-    <p class="lead mb-4">If you have an account</p>
+    @* Not logged in *@
+    @if (string.IsNullOrEmpty(username))
+    {
+        <h1 class="mb-3 text-success">Welcome to Agri – Energy Connect</h1>
+        <p class="lead mb-4">If you have an account</p>
 
-    <a asp-controller="User" asp-action="Login" class="btn btn-primary btn-lg mb-3">
-        Login
-    </a>
+        <a asp-controller="User" asp-action="Login" class="btn btn-primary btn-lg mb-3">
+            Login
+        </a>
 
-    <div class="mb-3">Or</div>
+        <div class="mb-3">Or</div>
 
-    <a asp-controller="User" asp-action="Register" class="btn btn-secondary btn-lg">
-        Register
-    </a>
+        <a asp-controller="User" asp-action="Register" class="btn btn-secondary btn-lg">
+            Register
+        </a>
+    }
+    @* Farmer dashboard *@
+    else if (role == "Farmer")
+    {
+        <h1 class="text-center text-success">Welcome, @username!</h1>
+    }
+    @* Employee dashboard *@
+    else if (role == "Employee")
+    {
+        <h1 class="text-center text-success mb-4">Welcome, @username!</h1>
+        <div>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg m-2">
+                View Products
+            </a>
+            <a asp-controller="Farmer" asp-action="Index" class="btn btn-primary btn-lg m-2">
+                View Farmers
+            </a>
+        </div>
+    }
 </div>
