@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Start of file
+using Microsoft.AspNetCore.Mvc;
 using TestApp.Models;
 using TestApp.Data;
 using System.Linq;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace TestApp.Controllers
 {
+    // Start of UserController class
     public class UserController : Controller
     {
         private readonly ApplicationContext _context;
@@ -15,46 +17,46 @@ namespace TestApp.Controllers
             _context = context;
         }
 
-        // GET: User/Register
+        // GET: /User/Register
+        // Shows the registration form for both Farmers and Employees.
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: User/Register
+        //  /User/Register
+        // Processes registration:
+        // - For Farmers, validates ContactInfo and Address, creates Farmer profile, links to User, sets session.
+        // - For Employees, skips Farmer fields and logs them in directly.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Register(User user, string ContactInfo, string Address)
         {
-            // 🔥 Conditional Validation
+            // Validate farmer-specific fields
             if (user.Role == "Farmer")
             {
                 if (string.IsNullOrEmpty(ContactInfo))
-                {
                     ModelState.AddModelError("ContactInfo", "Contact Info is required for Farmers.");
-                }
 
                 if (string.IsNullOrEmpty(Address))
-                {
                     ModelState.AddModelError("Address", "Address is required for Farmers.");
-                }
             }
             else
             {
-                // 🔥 Remove potential errors if it's an Employee registration
+                // Remove validation for Employee registrations
                 ModelState.Remove("ContactInfo");
                 ModelState.Remove("Address");
             }
 
             if (ModelState.IsValid)
             {
-                // 🔥 Save the User
+                // Save User record
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
-                // 🔥 If the role is "Farmer", also create a Farmer profile
                 if (user.Role == "Farmer")
                 {
+                    // Create and save Farmer profile linked to the user
                     var farmer = new Farmer
                     {
                         Name = user.Username,
@@ -62,41 +64,38 @@ namespace TestApp.Controllers
                         Address = Address,
                         UserId = user.Id
                     };
-
-                    // Save the Farmer details
                     _context.Farmers.Add(farmer);
                     _context.SaveChanges();
 
-                    // 🔥 Now we link the FarmerId to the User
+                    // Update User with FarmerId
                     user.FarmerId = farmer.Id;
                     _context.Users.Update(user);
                     _context.SaveChanges();
 
-                    // Set the FarmerId in Session
+                    // Store FarmerId in session and redirect to Products
                     HttpContext.Session.SetInt32("FarmerId", farmer.Id);
-
-                    // 🔥 Redirect to Product page for Farmers
                     return RedirectToAction("Index", "Product");
                 }
 
-                // 🔥 If the role is Employee, just login and redirect
+                // Employee login: set session and redirect home
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("Role", user.Role);
-
-                // 🔥 Redirect to Home for Employees
                 return RedirectToAction("Index", "Home");
             }
 
+            // If validation fails, re-display form with errors
             return View(user);
         }
 
-        // GET: User/Login
+        // GET: /User/Login
+        // Displays the login form.
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: User/Login
+        //  /User/Login
+        // Authenticates user credentials, sets session, and redirects.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
@@ -109,23 +108,25 @@ namespace TestApp.Controllers
                 HttpContext.Session.SetString("Username", loggedInUser.Username);
                 HttpContext.Session.SetString("Role", loggedInUser.Role);
 
-                if (loggedInUser.FarmerId != null)
-                {
-                    HttpContext.Session.SetInt32("FarmerId", (int)loggedInUser.FarmerId);
-                }
+                if (loggedInUser.FarmerId.HasValue)
+                    HttpContext.Session.SetInt32("FarmerId", loggedInUser.FarmerId.Value);
 
                 return RedirectToAction("Index", "Home");
             }
 
+            // Invalid credentials: show error
             ViewBag.Message = "Invalid Credentials";
             return View();
         }
 
-        // GET: User/Logout
+        // GET: /User/Logout
+        // Clears session and redirects to home page.
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
     }
+    // End of UserController class
 }
+ // End of file
