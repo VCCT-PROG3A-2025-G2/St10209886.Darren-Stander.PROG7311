@@ -1,27 +1,43 @@
+// Start of file
 using TestApp.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Database Context
+// Configure and register the SQLite database context
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlite("Data Source=testapp.db"));
 
-// Enable Session Management
+// Register distributed memory cache to store session data
 builder.Services.AddDistributedMemoryCache();
+
+// Register session services to enable server-side sessions
 builder.Services.AddSession();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // <-- ADD THIS
+
+// Register IHttpContextAccessor to allow access to HttpContext in services and controllers
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+// Add MVC services for controllers and Razor views
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Serve static files (e.g., CSS, JS, images) from wwwroot
 app.UseStaticFiles();
-app.UseRouting();
-app.UseSession();  // Enable Session
 
+// Enable routing 
+app.UseRouting();
+
+// Enable session  to read/write session data
+app.UseSession();
+
+// Configure the default controller route: /{controller=Home}/{action=Index}/{id?}
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
+// Start listening for incoming HTTP requests
 app.Run();
+// End of file
