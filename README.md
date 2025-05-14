@@ -2,6 +2,9 @@
 
 TestApp is an ASP.NET MVC application designed to manage farmers and their products while providing role-based access control for employees. The system features secure login, product management, and user-specific data handling.
 
+### Github Repo:
+https://github.com/Darren-Stander/testApp
+
 ## Features
 
 ### User Roles
