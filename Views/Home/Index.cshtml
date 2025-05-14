@@ -1,14 +1,16 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@* Start of file *@
+@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
+    // Set page title and retrieve session values
     ViewData["Title"] = "Home";
     var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
     var role = HttpContextAccessor.HttpContext.Session.GetString("Role");
 }
 
 <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 60vh;">
-    @* Not logged in *@
+    @* Unauthenticated users: prompt to log in or register *@
     @if (string.IsNullOrEmpty(username))
     {
         <h1 class="mb-3 text-success">Welcome to Agri – Energy Connect</h1>
@@ -24,12 +26,12 @@
             Register
         </a>
     }
-    @* Farmer dashboard *@
+    @* Farmer dashboard: simple welcome message *@
     else if (role == "Farmer")
     {
         <h1 class="text-center text-success">Welcome, @username!</h1>
     }
-    @* Employee dashboard *@
+    @* Employee dashboard: welcome plus navigation to management pages *@
     else if (role == "Employee")
     {
         <h1 class="text-center text-success mb-4">Welcome, @username!</h1>
@@ -43,3 +45,4 @@
         </div>
     }
 </div>
+@* End of file *@
