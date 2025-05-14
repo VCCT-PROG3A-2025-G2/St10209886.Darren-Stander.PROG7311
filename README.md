@@ -54,3 +54,9 @@ TestApp is an ASP.NET MVC application designed to manage farmers and their produ
 - Farmer users can add/view their own products.
 - Employee users can add Farmers, view all products, and filter/search.
 
+## AI Declartion and References
+- https://www.w3schools.com/cs/index.php
+- https://www.youtube.com/watch?v=QtiM87MV27w&pp=ygUfYyMgbXZjIHdlYiBhcHBsaWNhdGlvbiB0dXRvcmlhbA%3D%3D
+- https://www.youtube.com/watch?v=b1X7T8wNsJE&pp=ygU1aG93IHRvIGdldCBzcWxpdGUgdG8gd29yayB3aXRoIGMjIG12YyB3ZWIgYXBwbGljYXRpb24%3D
+- 
+
