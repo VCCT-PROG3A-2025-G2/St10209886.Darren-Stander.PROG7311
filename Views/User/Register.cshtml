@@ -1,4 +1,6 @@
-﻿@{
+﻿<!--  Start of file  -->
+@{
+    // Set the page title
     ViewData["Title"] = "Register";
 }
 
@@ -7,7 +9,7 @@
         <h2 class="text-center text-success mb-4">Register</h2>
 
         <form asp-controller="User" asp-action="Register" method="post">
-            <!-- STEP 1: Choose Role -->
+            <!--  Step 1: Role selection  -->
             <div class="mb-4 text-center">
                 <label for="Role" class="form-label fw-bold">Select Your Role</label>
                 <select id="Role" name="Role" class="form-select">
@@ -17,7 +19,7 @@
                 </select>
             </div>
 
-            <!-- COMMON FIELDS (Username & Password) -->
+            <!-- Common fields (Username & Password) shown after role pick -->
             <div id="commonFields" style="display: none;">
                 <div class="mb-3">
                     <label for="Username" class="form-label">Username</label>
@@ -29,7 +31,7 @@
                 </div>
             </div>
 
-            <!-- FARMER-ONLY FIELDS -->
+            <!--  Farmer-only fields shown when “Farmer” is selected -->
             <div id="farmerFields" style="display: none;">
                 <div class="mb-3">
                     <label for="ContactInfo" class="form-label">Contact Info</label>
@@ -41,7 +43,7 @@
                 </div>
             </div>
 
-            <!-- REGISTER BUTTON -->
+            <!--   Register button appears once a role is chosen  -->
             <button id="registerBtn" type="submit" class="btn btn-success w-100" style="display: none;">
                 Register
             </button>
@@ -52,27 +54,31 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-          const roleSelect   = document.getElementById('Role');
-          const commonFields = document.getElementById('commonFields');
-          const farmerFields = document.getElementById('farmerFields');
-          const registerBtn  = document.getElementById('registerBtn');
+            const roleSelect   = document.getElementById('Role');
+            const commonFields = document.getElementById('commonFields');
+            const farmerFields = document.getElementById('farmerFields');
+            const registerBtn  = document.getElementById('registerBtn');
 
-          roleSelect.addEventListener('change', () => {
-            const choice = roleSelect.value;
-            if (choice === 'Farmer') {
-              commonFields.style.display = 'block';
-              farmerFields.style.display = 'block';
-              registerBtn.style.display  = 'block';
-            } else if (choice === 'Employee') {
-              commonFields.style.display = 'block';
-              farmerFields.style.display = 'none';
-              registerBtn.style.display  = 'block';
-            } else {
-              commonFields.style.display = 'none';
-              farmerFields.style.display = 'none';
-              registerBtn.style.display  = 'none';
-            }
-          });
+            roleSelect.addEventListener('change', () => {
+                const choice = roleSelect.value;
+                if (choice === 'Farmer') {
+                    // Show both common and farmer fields
+                    commonFields.style.display = 'block';
+                    farmerFields.style.display = 'block';
+                    registerBtn.style.display  = 'block';
+                } else if (choice === 'Employee') {
+                    // Show only common fields
+                    commonFields.style.display = 'block';
+                    farmerFields.style.display = 'none';
+                    registerBtn.style.display  = 'block';
+                } else {
+                    // Hide all when no valid role selected
+                    commonFields.style.display = 'none';
+                    farmerFields.style.display = 'none';
+                    registerBtn.style.display  = 'none';
+                }
+            });
         });
     </script>
 }
+<!--  End of file -->
