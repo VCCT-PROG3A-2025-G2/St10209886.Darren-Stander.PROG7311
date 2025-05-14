@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Start of file
+using Microsoft.AspNetCore.Mvc;
 using TestApp.Models;
 using TestApp.Data;
 using System.Linq;
@@ -7,7 +8,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace TestApp.Controllers
 {
-    [AuthorizeEmployee] // Restricts access to Employees only
+    // Start of FarmerController class
+    [AuthorizeEmployee]
     public class FarmerController : Controller
     {
         private readonly ApplicationContext _context;
@@ -38,6 +40,7 @@ namespace TestApp.Controllers
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
+            // If validation fails, redisplay form with validation messages
             return View(farmer);
         }
 
@@ -46,18 +49,24 @@ namespace TestApp.Controllers
             var farmer = _context.Farmers.FirstOrDefault(f => f.Id == id);
             if (farmer == null)
             {
+                // Return HTTP 404 if not found
                 return NotFound();
             }
             return View(farmer);
         }
     }
+    // End of FarmerController class
 
-    // Custom Authorization Attribute for Employee
+    // Start of AuthorizeEmployeeAttribute class
     public class AuthorizeEmployeeAttribute : TypeFilterAttribute
     {
-        public AuthorizeEmployeeAttribute() : base(typeof(EmployeeAuthorizationFilter)) { }
+        public AuthorizeEmployeeAttribute()
+            : base(typeof(EmployeeAuthorizationFilter))
+        { }
     }
+    // End of AuthorizeEmployeeAttribute class
 
+    // Start of EmployeeAuthorizationFilter class
     public class EmployeeAuthorizationFilter : IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -65,8 +74,11 @@ namespace TestApp.Controllers
             var role = context.HttpContext.Session.GetString("Role");
             if (role != "Employee")
             {
+                // Redirect non-employees to an AccessDenied page
                 context.Result = new RedirectToActionResult("AccessDenied", "Home", null);
             }
         }
     }
+    // End of EmployeeAuthorizationFilter class
 }
+// End of file
