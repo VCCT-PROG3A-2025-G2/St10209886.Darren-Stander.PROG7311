@@ -1,4 +1,4 @@
-﻿// Controllers/ProductController.cs
+﻿// Start of file
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace TestApp.Controllers
 {
+    // Start of ProductController class
     public class ProductController : Controller
     {
         private readonly ApplicationContext _context;
@@ -18,7 +19,11 @@ namespace TestApp.Controllers
             _context = context;
         }
 
-        // GET: Product/Index
+        // GET: /Product/Index
+        // Retrieves products based on user role:
+        // - Farmers see only their own products.
+        // - Employees can filter by category and production date range.
+        // - Others are redirected to AccessDenied.
         public IActionResult Index(string category, DateTime? startDate, DateTime? endDate)
         {
             try
@@ -27,17 +32,17 @@ namespace TestApp.Controllers
                 var farmerId = HttpContext.Session.GetInt32("FarmerId");
 
                 var products = _context.Products
-                    .Include(p => p.Farmer)
-                    .AsQueryable();
+                                       .Include(p => p.Farmer)
+                                       .AsQueryable();
 
                 if (role == "Farmer" && farmerId.HasValue)
                 {
-                    // Farmers see only their own products
+                    // Restrict farmers to their own products
                     products = products.Where(p => p.FarmerId == farmerId.Value);
                 }
                 else if (role == "Employee")
                 {
-                    // Employees can filter all products
+                    // Apply filters for employees
                     if (!string.IsNullOrEmpty(category))
                         products = products.Where(p => p.Category.Contains(category));
                     if (startDate.HasValue)
@@ -47,6 +52,7 @@ namespace TestApp.Controllers
                 }
                 else
                 {
+                    // Deny access for any other roles
                     return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -54,12 +60,14 @@ namespace TestApp.Controllers
             }
             catch (Exception ex)
             {
+                // Log and show error view on exception
                 Console.WriteLine($"ERROR LOADING PRODUCTS: {ex.Message}");
                 return View("Error");
             }
         }
 
-        // GET: Product/Details/5 (Employees only)
+        // GET: /Product/Details/{id}
+        // Employees only: shows one product and its farmer details.
         public IActionResult Details(int id)
         {
             var role = HttpContext.Session.GetString("Role");
@@ -76,7 +84,8 @@ namespace TestApp.Controllers
             return View(product);
         }
 
-        // GET: Product/Add (Farmers only)
+        // GET: /Product/Add
+        // Farmers only: displays form to create a new product.
         public IActionResult Add()
         {
             var role = HttpContext.Session.GetString("Role");
@@ -86,7 +95,8 @@ namespace TestApp.Controllers
             return View(new Product());
         }
 
-        // POST: Product/Add (Farmers only)
+        // POST: /Product/Add
+        // Farmers only: sets FarmerId from session, saves new product, redirects to Index.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Add(Product product)
@@ -98,19 +108,21 @@ namespace TestApp.Controllers
                     return RedirectToAction("AccessDenied", "Home");
 
                 product.FarmerId = farmerId.Value;
-
                 _context.Products.Add(product);
                 _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
+                // Log error and redisplay form on failure
                 Console.WriteLine($"ERROR ADDING PRODUCT: {ex.Message}");
                 return View(product);
             }
         }
 
-        // GET: Product/Edit/5 (Farmer only, own products)
+        // GET: /Product/Edit/{id}
+        // Farmers only: loads form to edit their own product; denies access otherwise.
         public IActionResult Edit(int id)
         {
             var role = HttpContext.Session.GetString("Role");
@@ -127,7 +139,8 @@ namespace TestApp.Controllers
             return View(product);
         }
 
-        // POST: Product/Edit/5
+        // POST: /Product/Edit
+        // Farmers only: updates product if owned by current farmer and model is valid.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Product product)
@@ -146,7 +159,8 @@ namespace TestApp.Controllers
             return View(product);
         }
 
-        // GET: Product/Delete/5 (Farmer only, own products)
+        // GET: /Product/Delete/{id}
+        // Farmers only: displays confirmation for deleting their own product.
         public IActionResult Delete(int id)
         {
             var role = HttpContext.Session.GetString("Role");
@@ -163,7 +177,8 @@ namespace TestApp.Controllers
             return View(product);
         }
 
-        // POST: Product/Delete/5
+        // POST: /Product/DeleteConfirmed/{id}
+        // Farmers only: removes the specified product if owned by the current farmer.
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -180,4 +195,6 @@ namespace TestApp.Controllers
             return RedirectToAction(nameof(Index));
         }
     }
+    // End of ProductController class
 }
+// End of file
