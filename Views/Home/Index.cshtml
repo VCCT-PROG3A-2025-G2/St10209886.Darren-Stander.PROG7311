@@ -1,6 +1,19 @@
-﻿<h2>Welcome to TestApp</h2>
+﻿<!-- Views/Home/Index.cshtml -->
+@{
+    ViewData["Title"] = "Home";
+}
 
-<div class="d-flex justify-content-center mt-4">
-    <a class="btn btn-primary btn-lg m-2" href="/User/Login">Login</a>
-    <a class="btn btn-secondary btn-lg m-2" href="/User/Register">Register</a>
+<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 60vh;">
+    <h1 class="mb-3 text-success">Welcome to Agri – Energy Connect</h1>
+    <p class="lead mb-4">If you have an account</p>
+
+    <a asp-controller="User" asp-action="Login" class="btn btn-primary btn-lg mb-3">
+        Login
+    </a>
+
+    <div class="mb-3">Or</div>
+
+    <a asp-controller="User" asp-action="Register" class="btn btn-secondary btn-lg">
+        Register
+    </a>
 </div>
