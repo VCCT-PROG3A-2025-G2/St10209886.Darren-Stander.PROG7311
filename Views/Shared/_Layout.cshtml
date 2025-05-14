@@ -1,4 +1,4 @@
-﻿<!-- Views/Shared/_Layout.cshtml -->
+﻿
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@
                     <ul class="navbar-nav">
                         @if (HttpContextAccessor.HttpContext.Session.GetString("Username") != null)
                         {
-                            @* Show role-based links only after login *@
+                            <!--  Show role-based links only after login -->
                             @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
                             {
                                 <li class="nav-item">

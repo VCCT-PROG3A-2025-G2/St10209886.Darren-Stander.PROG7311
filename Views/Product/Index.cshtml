@@ -3,7 +3,7 @@
 
 <h2>Products List</h2>
 
-<!-- 🔥 Filter Options for Employees -->
+<!-- Filter Options for Employees -->
 @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Employee")
 {
     <form asp-action="Index" method="get">
@@ -57,7 +57,7 @@
     </tbody>
 </table>
 
-<!-- 🔥 Add New Product button ONLY visible to Farmers -->
+<!-- Add New Product button ONLY visible to Farmers -->
 @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
 {
     <a asp-controller="Product" asp-action="Add" class="btn btn-success mt-3">Add New Product</a>
