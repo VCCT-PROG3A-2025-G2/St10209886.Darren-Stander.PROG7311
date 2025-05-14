@@ -48,7 +48,6 @@ TestApp is an ASP.NET MVC application designed to manage farmers and their produ
 
 ## How it works
 - Run the application by pressing f5
-- Open your browser at http://localhost:7130/.
 - You’ll land on the Login/Register screen.
 - Choose Farmer or Employee when registering.
 - Farmer users can add/view their own products.
