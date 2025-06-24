@@ -8,11 +8,13 @@ https://github.com/Darren-Stander/St10209886.Darren-Stander.PROG7311
 
 ### User Roles
  **Farmer:**
+   - Username: cliveIsDaBest Password: 12456
    - Can add new products.
    - Can edit and delete their own products.
    - Cannot view product details.
 
  **Employee:**
+   - Username: Clive Franklin Password: 1234
    - Can view details of all products.
    - Can filter products based on category, date range, and name.
    - Cannot add, edit, or delete any products.
