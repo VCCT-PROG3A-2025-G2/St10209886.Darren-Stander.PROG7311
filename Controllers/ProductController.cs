@@ -1,11 +1,10 @@
 ﻿// Start of file
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using testApp.Services;
 using TestApp.Data;
 using TestApp.Models;
-using System;
-using System.Linq;
+
 
 namespace TestApp.Controllers
 {
@@ -13,10 +12,12 @@ namespace TestApp.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly IProductService _productService;
 
-        public ProductController(ApplicationContext context)
+        public ProductController(ApplicationContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: /Product/Index
@@ -99,7 +100,7 @@ namespace TestApp.Controllers
         // Farmers only: sets FarmerId from session, saves new product, redirects to Index.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(Product product)
+        public async Task<IActionResult> Add(Product product)
         {
             try
             {
@@ -108,18 +109,17 @@ namespace TestApp.Controllers
                     return RedirectToAction("AccessDenied", "Home");
 
                 product.FarmerId = farmerId.Value;
-                _context.Products.Add(product);
-                _context.SaveChanges();
+                await _productService.CreateProductAsync(product);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                // Log error and redisplay form on failure
                 Console.WriteLine($"ERROR ADDING PRODUCT: {ex.Message}");
                 return View(product);
             }
         }
+
 
         // GET: /Product/Edit/{id}
         // Farmers only: loads form to edit their own product; denies access otherwise.

@@ -2,6 +2,7 @@
 using TestApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using testApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Add MVC services for controllers and Razor views
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
