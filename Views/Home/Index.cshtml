@@ -1,48 +1,46 @@
-﻿@* Start of file *@
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
-    // Set page title and retrieve session values
     ViewData["Title"] = "Home";
     var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
     var role = HttpContextAccessor.HttpContext.Session.GetString("Role");
 }
 
-<div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 60vh;">
-    @* Unauthenticated users: prompt to log in or register *@
-    @if (string.IsNullOrEmpty(username))
-    {
-        <h1 class="mb-3 text-success">Welcome to Agri – Energy Connect</h1>
-        <p class="lead mb-4">If you have an account</p>
+<div style="min-height: 62vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card">
+        @if (string.IsNullOrEmpty(username))
+        {
+            <h1 class="headline mb-3">Welcome to Agri – Energy Connect</h1>
+            <p style="color:#555; font-size:1.13rem;">Log in or register to get started:</p>
 
-        <a asp-controller="User" asp-action="Login" class="btn btn-primary btn-lg mb-3">
-            Login
-        </a>
-
-        <div class="mb-3">Or</div>
-
-        <a asp-controller="User" asp-action="Register" class="btn btn-secondary btn-lg">
-            Register
-        </a>
-    }
-    @* Farmer dashboard: simple welcome message *@
-    else if (role == "Farmer")
-    {
-        <h1 class="text-center text-success">Welcome, @username!</h1>
-    }
-    @* Employee dashboard: welcome plus navigation to management pages *@
-    else if (role == "Employee")
-    {
-        <h1 class="text-center text-success mb-4">Welcome, @username!</h1>
-        <div>
-            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg m-2">
-                View Products
-            </a>
-            <a asp-controller="Farmer" asp-action="Index" class="btn btn-primary btn-lg m-2">
-                View Farmers
-            </a>
-        </div>
-    }
+            <div class="actions" style="margin-bottom:1.2rem;">
+                <a asp-controller="User" asp-action="Login" class="btn btn-primary btn-lg">
+                    Login
+                </a>
+                <a asp-controller="User" asp-action="Register" class="btn btn-secondary btn-lg">
+                    Register
+                </a>
+            </div>
+        }
+        else if (role == "Farmer")
+        {
+            <h1 class="headline">Welcome, @username!</h1>
+            <div class="actions">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary m-2">My Products</a>
+            </div>
+        }
+        else if (role == "Employee")
+        {
+            <h1 class="headline mb-2">Welcome, @username!</h1>
+            <div class="actions">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary m-2">
+                    View Products
+                </a>
+                <a asp-controller="Farmer" asp-action="Index" class="btn btn-info m-2">
+                    View Farmers
+                </a>
+            </div>
+        }
+    </div>
 </div>
-@* End of file *@

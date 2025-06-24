@@ -1,14 +1,15 @@
-/* wwwroot/css/site.css */
-
 /* ==============================
-   Root Color Palette
+   Root Color Palette (Blue Theme)
    ============================== */
 :root {
-    --green-primary: #28a745;
-    --green-dark: #218838;
-    --green-light: #e9f7ef;
-    --gray-bg: #f8f9fa;
-    --text-dark: #343a40;
+    --primary: #6C63FF;
+    --primary-dark: #554ee2;
+    --accent: #EAF0FB;
+    --gray-bg: #F4F6F8;
+    --text-dark: #222;
+    --danger: #FF4D4F;
+    --info: #53B9F5;
+    --warning: #FFD966;
 }
 
 /* ==============================
@@ -25,7 +26,7 @@ body {
     min-height: 100vh;
     background-color: var(--gray-bg);
     color: var(--text-dark);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", "Inter", Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
 }
 
@@ -37,8 +38,8 @@ body {
    Navbar
    ============================== */
 .navbar {
-    background-color: var(--green-primary) !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: var(--primary) !important;
+    box-shadow: 0 2px 4px rgba(108,99,255,0.09);
 }
 
     .navbar .navbar-brand,
@@ -47,7 +48,7 @@ body {
     }
 
         .navbar .nav-link:hover {
-            color: var(--green-light) !important;
+            color: #d6e3ff !important;
         }
 
 /* ==============================
@@ -55,18 +56,35 @@ body {
    ============================== */
 .table {
     background: #fff;
-    border-radius: 0.25rem;
+    border-radius: 0.4rem;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(108,99,255,0.05);
 }
 
     .table thead {
-        background-color: var(--green-primary);
+        background-color: var(--primary);
         color: #fff;
     }
 
     .table tbody tr:hover {
-        background-color: var(--green-light);
+        background-color: var(--accent);
     }
+
+th {
+    font-weight: 700;
+    padding: .85rem 1.1rem;
+    text-align: left;
+    letter-spacing: 0.01em;
+}
+
+td {
+    padding: .72rem 1.1rem;
+    border-bottom: 1px solid #ece8fe;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
 
 /* ==============================
    Forms & Buttons
@@ -78,61 +96,78 @@ body {
 }
 
 .form-control {
-    border-radius: 0.25rem;
+    border-radius: 0.3rem;
     border: 1px solid #ced4da;
+    font-size: 1rem;
 }
 
     .form-control:focus {
-        box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
-        border-color: var(--green-primary);
+        box-shadow: 0 0 0 0.17rem rgba(108,99,255,0.15);
+        border-color: var(--primary);
+        outline: none;
     }
 
 .btn {
-    border-radius: 0.25rem;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
+    border-radius: 0.7rem;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    font-size: 1.08rem;
+    transition: background .16s, color .16s, box-shadow .12s;
+    border: none;
+    cursor: pointer;
+    margin: 0.18rem 0.15rem;
 }
 
 .btn-primary {
-    background-color: var(--green-primary);
-    border-color: var(--green-primary);
+    background-color: var(--primary);
+    color: #fff;
 }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background-color: var(--green-dark);
-        border-color: var(--green-dark);
+        background-color: var(--primary-dark);
+        color: #fff;
     }
 
 .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: #fff;
+    background-color: #fff;
+    border: 2px solid var(--primary);
+    color: var(--primary);
 }
 
     .btn-secondary:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
+        background-color: #ece8fe;
+        color: var(--primary-dark);
     }
 
-.btn-success {
-    background-color: var(--green-primary);
-    border-color: var(--green-primary);
+.btn-info {
+    background-color: var(--info);
+    color: #fff;
 }
 
-    .btn-success:hover {
-        background-color: var(--green-dark);
-        border-color: var(--green-dark);
+    .btn-info:hover {
+        background-color: #3caee2;
+        color: #fff;
+    }
+
+.btn-warning {
+    background-color: var(--warning);
+    color: #222;
+}
+
+    .btn-warning:hover {
+        background-color: #ffd740;
+        color: #222;
     }
 
 .btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+    background-color: var(--danger);
+    color: #fff;
 }
 
     .btn-danger:hover {
-        background-color: #c82333;
-        border-color: #bd2130;
+        background-color: #d43a3a;
+        color: #fff;
     }
 
 /* ==============================
@@ -150,29 +185,78 @@ body {
     margin: 0.5rem !important;
 }
 
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
 /* ==============================
-   Center the ROW container, 
-   but keep its children left-aligned
+   Centering & Layout
    ============================== */
 main[role="main"] {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* allow rows inside to stretch full-width */
     align-items: stretch;
 }
 
-    /* force any direct .row under main to be full-width */
     main[role="main"] > .row {
         width: 100%;
     }
 
-/* your existing centering on HOME/Login/Register
-   still works because those rows use:
-     <div class="row justify-content-center align-items-center">
-   which now truly centers the column in the middle */
-
-/* optional: if you want headings centered site-wide */
+/* ==============================
+   Headings & Cards
+   ============================== */
 h1, h2 {
     text-align: center;
+    font-weight: 800;
+}
+
+.headline {
+    font-size: 2.2rem;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: .8rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 1.3rem;
+    box-shadow: 0 8px 32px rgba(108,99,255,0.08);
+    padding: 2.2rem 1.4rem;
+    max-width: 600px;
+    margin: 2.1rem auto;
+    text-align: center;
+}
+
+.footer {
+    font-size: 1rem;
+    color: #aab;
+    padding: 1.1rem 0 1rem 0;
+    text-align: center;
+    letter-spacing: 0.03em;
+    background: transparent;
+}
+
+@media (max-width: 600px) {
+    .card {
+        padding: 1.1rem .7rem;
+        border-radius: 1rem;
+    }
+
+    .headline {
+        font-size: 1.3rem;
+    }
+
+    .table, .card {
+        font-size: .98rem;
+    }
+
+    .btn {
+        padding: 0.45rem 0.8rem;
+        font-size: 1rem;
+    }
 }

@@ -1,13 +1,17 @@
 ﻿@model TestApp.Models.Farmer
 
-<h2>Farmer Details</h2>
-
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Name</h5>
-        <p class="card-text"><strong>Contact Info:</strong> @Model.ContactInfo</p>
-        <p class="card-text"><strong>Address:</strong> @Model.Address</p>
+<div style="min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <div class="card" style="max-width:420px; width:100%;">
+        <h2 class="headline mb-3">Farmer Details</h2>
+        <div style="padding: 1.1rem 0;">
+            <h3 style="font-weight:700; color:var(--primary); margin-bottom:.7rem;">@Model.Name</h3>
+            <p style="font-size:1.09rem; margin-bottom:.5rem;">
+                <strong>Contact Info:</strong> @Model.ContactInfo
+            </p>
+            <p style="font-size:1.09rem;">
+                <strong>Address:</strong> @Model.Address
+            </p>
+        </div>
+        <a href="/Farmer" class="btn btn-secondary mt-2">Back to List</a>
     </div>
 </div>
-
-<a href="/Farmer" class="btn btn-secondary mt-3">Back to List</a>

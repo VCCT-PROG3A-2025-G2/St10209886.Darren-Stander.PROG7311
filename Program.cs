@@ -22,8 +22,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // Add MVC services for controllers and Razor views
 builder.Services.AddControllersWithViews();
 
+// newly added service 
 builder.Services.AddScoped<IUserService, UserService>();
 
+//newly added service
 builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();

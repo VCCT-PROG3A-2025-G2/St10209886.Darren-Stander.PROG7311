@@ -1,64 +1,64 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model IEnumerable<TestApp.Models.Product>
 
-<h2>Products List</h2>
+<h2 class="headline">Products List</h2>
 
-<!-- Filter Options for Employees -->
-@if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Employee")
-{
-    <form asp-action="Index" method="get">
-        <div class="form-group">
-            <label>Category:</label>
-            <input type="text" name="category" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Start Date:</label>
-            <input type="date" name="startDate" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>End Date:</label>
-            <input type="date" name="endDate" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Filter</button>
-    </form>
-}
+<div class="card">
+    @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Employee")
+    {
+        <form asp-action="Index" method="get" style="margin-bottom: 1.2rem;">
+            <div class="form-group" style="display:inline-block; margin-right:.9rem;">
+                <label>Category:</label>
+                <input type="text" name="category" class="form-control" />
+            </div>
+            <div class="form-group" style="display:inline-block; margin-right:.9rem;">
+                <label>Start Date:</label>
+                <input type="date" name="startDate" class="form-control" />
+            </div>
+            <div class="form-group" style="display:inline-block;">
+                <label>End Date:</label>
+                <input type="date" name="endDate" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+        </form>
+    }
 
-<table class="table mt-3">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Production Date</th>
-            <th>Farmer Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model)
-        {
+    <table class="table mt-3">
+        <thead>
             <tr>
-                <td>@product.Name</td>
-                <td>@product.Category</td>
-                <td>@product.ProductionDate.ToShortDateString()</td>
-                <td>@product.Farmer?.Name</td>
-                <td>
-                    @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Employee")
-                    {
-                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-info">Details</a>
-                    }
-                    @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
-                    {
-                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>
-                        <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
-                    }
-                </td>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Production Date</th>
+                <th>Farmer Name</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Category</td>
+                    <td>@product.ProductionDate.ToShortDateString()</td>
+                    <td>@product.Farmer?.Name</td>
+                    <td>
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Employee")
+                        {
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-info">Details</a>
+                        }
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
+                        {
+                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>
+                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<!-- Add New Product button ONLY visible to Farmers -->
-@if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
-{
-    <a asp-controller="Product" asp-action="Add" class="btn btn-success mt-3">Add New Product</a>
-}
+    @if (HttpContextAccessor.HttpContext.Session.GetString("Role") == "Farmer")
+    {
+        <a asp-controller="Product" asp-action="Add" class="btn btn-primary mt-3">Add New Product</a>
+    }
+</div>
