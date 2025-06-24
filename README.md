@@ -33,6 +33,11 @@ https://github.com/Darren-Stander/testApp
 - User login with session management.
 - role-based access via ASP.NET filters.
 
+## Service Layer
+- All core business logic is in the `Services` folder.
+- Example: `UserService.cs` and `IUserService.cs`
+- Services are registered in `Program.cs` for dependency injection.
+
 ### Product Management (Farmers)
 - Add, edit, and delete products.
 - View only their own products.
