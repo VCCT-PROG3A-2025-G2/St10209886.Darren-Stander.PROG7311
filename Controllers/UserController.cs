@@ -74,12 +74,15 @@ namespace TestApp.Controllers
 
                     // Store FarmerId in session and redirect to Products
                     HttpContext.Session.SetInt32("FarmerId", farmer.Id);
+                    HttpContext.Session.SetString("Role", user.Role);
+
                     return RedirectToAction("Index", "Product");
                 }
 
                 // Employee login: set session and redirect home
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("Role", user.Role);
+
                 return RedirectToAction("Index", "Home");
             }
 
